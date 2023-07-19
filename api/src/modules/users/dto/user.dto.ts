@@ -8,8 +8,9 @@ import {
   Min,
 } from 'class-validator';
 import { ActivityLevel, Gender, Goal } from '../entities/user.entity';
+import { IUser } from '../interfaces/IUser';
 
-export class UserDto {
+export class UserDto implements IUser {
   @IsNotEmpty()
   @IsString()
   username: string;

@@ -5,6 +5,7 @@ import authConfiguration from './modules/configuration/auth-configuration';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { FoodsModule } from './modules/foods/foods.module';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -32,6 +33,7 @@ require('dotenv').config();
     }),
     AuthModule,
     UsersModule,
+    FoodsModule,
   ],
   controllers: [],
   providers: [],
