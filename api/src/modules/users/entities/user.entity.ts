@@ -1,19 +1,20 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
-enum Gender {
+export enum Gender {
   MALE = 'male',
   FEMALE = 'female',
   OTHER = 'other',
 }
 
-enum ActivityLevel {
+export enum ActivityLevel {
   SEDENTARY = 'sedentary',
   LIGHTLY_ACTIVE = 'lightly_active',
   MODERATELY_ACTIVE = 'moderately_active',
   VERY_ACTIVE = 'very_active',
 }
 
-enum Goal {
+export enum Goal {
   LOSE_WEIGHT = 'lose_weight',
   MAINTAIN_WEIGHT = 'maintain_weight',
   GAIN_WEIGHT = 'gain_weight',
@@ -29,7 +30,7 @@ export class User {
   @Column({ nullable: false, unique: true })
   username: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, select: false })
   password: string;
 
   @Column({ nullable: false, unique: true })
@@ -60,4 +61,10 @@ export class User {
 
   @Column({ type: 'enum', enum: Goal, default: Goal.MAINTAIN_WEIGHT })
   goal: Goal;
+
+  @BeforeInsert()
+  async hashPassword() {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+  }
 }

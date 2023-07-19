@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import dbConfiguration from './modules/configuration/db-configuration';
+import authConfiguration from './modules/configuration/auth-configuration';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './modules/users/users.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -10,7 +12,7 @@ require('dotenv').config();
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [dbConfiguration],
+      load: [dbConfiguration, authConfiguration],
       envFilePath: './env/development.env',
       isGlobal: true,
     }),
@@ -28,6 +30,7 @@ require('dotenv').config();
       }),
       inject: [ConfigService],
     }),
+    AuthModule,
     UsersModule,
   ],
   controllers: [],
