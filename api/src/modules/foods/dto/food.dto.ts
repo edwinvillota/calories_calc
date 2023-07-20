@@ -1,8 +1,9 @@
-import { IsInt, IsNotEmpty, IsPositive, IsString, Min } from 'class-validator';
+import { IsInt, IsNotEmpty, IsString, Min, NotContains } from 'class-validator';
 
 export class FoodDto {
   @IsNotEmpty()
   @IsString()
+  @NotContains(' ')
   name: string;
 
   @IsInt()
@@ -27,5 +28,6 @@ export class FoodDto {
 
   @IsNotEmpty()
   @IsString()
+  @NotContains(' ')
   serving_size_unit: string;
 }

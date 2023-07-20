@@ -6,6 +6,7 @@ import {
   IsString,
   Max,
   Min,
+  NotContains,
 } from 'class-validator';
 import { ActivityLevel, Gender, Goal } from '../entities/user.entity';
 import { IUser } from '../interfaces/IUser';
@@ -13,6 +14,7 @@ import { IUser } from '../interfaces/IUser';
 export class UserDto implements IUser {
   @IsNotEmpty()
   @IsString()
+  @NotContains(' ')
   username: string;
 
   @IsNotEmpty()
