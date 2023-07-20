@@ -1,6 +1,17 @@
-import { IsInt, IsNotEmpty, IsString, Min, NotContains } from 'class-validator';
+import {
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Min,
+  NotContains,
+} from 'class-validator';
 
 export class FoodDto {
+  @IsOptional()
+  @IsInt()
+  id?: number;
+
   @IsNotEmpty()
   @IsString()
   @NotContains(' ')

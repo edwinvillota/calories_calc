@@ -1,5 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  BeforeInsert,
+  OneToMany,
+} from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { Meal } from 'src/modules/meals/entities/meal.entity';
 
 export enum Gender {
   MALE = 'male',
@@ -61,6 +68,9 @@ export class User {
 
   @Column({ type: 'enum', enum: Goal, default: Goal.MAINTAIN_WEIGHT })
   goal: Goal;
+
+  @OneToMany(() => Meal, (meal) => meal.user)
+  meals: Meal[];
 
   @BeforeInsert()
   async hashPassword() {

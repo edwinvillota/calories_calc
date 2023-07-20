@@ -1,7 +1,7 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
-  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -32,7 +32,7 @@ export class FoodsService {
     const food = await this.findFoodById(id);
 
     if (!food) {
-      throw new NotFoundException('Food not found');
+      throw new ConflictException(`Food with id ${id} not found`);
     }
 
     return food;

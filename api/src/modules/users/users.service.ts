@@ -22,6 +22,10 @@ export class UsersService {
     return this.usersRepository.findOneBy({ email });
   }
 
+  getUserById(id: number) {
+    return this.usersRepository.findOneBy({ id });
+  }
+
   async createUser(user: UserDto) {
     const userExists = await this.getUserByEmail(user.email);
 

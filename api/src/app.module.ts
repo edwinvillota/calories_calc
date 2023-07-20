@@ -7,6 +7,7 @@ import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { FoodsModule } from './modules/foods/foods.module';
 import { ExerciseActivitiesModule } from './modules/exercise-activities/exercise-activities.module';
+import { MealsModule } from './modules/meals/meals.module';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -36,6 +37,7 @@ require('dotenv').config();
     UsersModule,
     FoodsModule,
     ExerciseActivitiesModule,
+    MealsModule,
   ],
   controllers: [],
   providers: [],
