@@ -71,8 +71,6 @@ export class MealsService {
     await this.usersService.getUserById(userId);
 
     for (const loggedFood of meal.logged_foods) {
-      console.log({ loggedFood });
-
       const foodExists = await this.foodsService.getFoodById(
         loggedFood.food.id!,
       );

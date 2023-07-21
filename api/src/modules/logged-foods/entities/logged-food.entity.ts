@@ -22,7 +22,7 @@ export class LoggedFood implements ILoggedFood {
   @JoinColumn({ name: 'meal_id' })
   meal: Meal;
 
-  @Column({ nullable: false, type: 'bigint' })
+  @Column({ nullable: false })
   meal_id: string;
 
   @ManyToOne(() => Food, { nullable: false, eager: true })

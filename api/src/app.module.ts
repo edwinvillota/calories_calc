@@ -10,6 +10,7 @@ import { ExerciseActivitiesModule } from './modules/exercise-activities/exercise
 import { MealsModule } from './modules/meals/meals.module';
 
 import { LoggedFoodsModule } from './modules/logged-foods/logged-foods.module';
+import { ExercisesModule } from './modules/exercises/exercises.module';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -42,6 +43,7 @@ require('dotenv').config();
     ExerciseActivitiesModule,
     MealsModule,
     LoggedFoodsModule,
+    ExercisesModule,
   ],
   controllers: [],
   providers: [],

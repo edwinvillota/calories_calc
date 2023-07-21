@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Meal } from 'src/modules/meals/entities/meal.entity';
+import { Exercise } from 'src/modules/exercises/entities/exercise.entity';
 
 export enum Gender {
   MALE = 'male',
@@ -71,6 +72,9 @@ export class User {
 
   @OneToMany(() => Meal, (meal) => meal.user)
   meals: Meal[];
+
+  @OneToMany(() => Exercise, (exercise) => exercise.user)
+  exercises: Exercise[];
 
   @BeforeInsert()
   async hashPassword() {

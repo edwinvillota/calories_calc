@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -31,7 +32,7 @@ export class ExerciseActivitiesService {
     const activity = await this.findActivityById(id);
 
     if (!activity) {
-      throw new NotFoundException('Activity does not exist');
+      throw new ConflictException('Activity does not exist');
     }
 
     return activity;

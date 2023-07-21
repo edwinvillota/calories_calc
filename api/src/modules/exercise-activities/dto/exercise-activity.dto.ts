@@ -1,12 +1,17 @@
 import {
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   Min,
   NotContains,
 } from 'class-validator';
 
 export class ExerciseActivityDto {
+  @IsOptional()
+  @IsNumber()
+  id: number;
+
   @IsNotEmpty()
   @IsString()
   @NotContains(' ')
