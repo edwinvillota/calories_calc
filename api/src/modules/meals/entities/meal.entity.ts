@@ -2,13 +2,13 @@ import {
   Column,
   Entity,
   JoinTable,
-  ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { IMeal } from '../interfaces/IMeal';
 import { User } from 'src/modules/users/entities/user.entity';
-import { Food } from 'src/modules/foods/entities/food.entity';
+import { LoggedFood } from 'src/modules/logged-foods/entities/logged-food.entity';
 
 export enum MealType {
   BREAKFAST = 'breakfast',
@@ -36,7 +36,10 @@ export class Meal implements IMeal {
   })
   meal_type: MealType;
 
-  @ManyToMany(() => Food, { eager: true })
-  @JoinTable({ name: 'meal_foods' })
-  foods: Food[];
+  @OneToMany(() => LoggedFood, (loggedFood) => loggedFood.meal, {
+    eager: true,
+    cascade: true,
+  })
+  @JoinTable({ name: 'meal_logged_foods' })
+  logged_foods: LoggedFood[];
 }

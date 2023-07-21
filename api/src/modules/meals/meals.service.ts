@@ -1,16 +1,18 @@
 import {
   ConflictException,
+  Inject,
   Injectable,
-  NotFoundException,
+  forwardRef,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Meal } from './entities/meal.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersService } from '../users/users.service';
 import { MealDto } from './dto/meal.dto';
+
+import { LoggedFoodsService } from '../logged-foods/logged-foods.service';
 import { FoodsService } from '../foods/foods.service';
-import { FoodDto } from '../foods/dto/food.dto';
-import { Food } from '../foods/entities/food.entity';
+import { LoggedFoodDto } from '../logged-foods/dto/logged-food.dto';
 
 @Injectable()
 export class MealsService {
@@ -19,10 +21,19 @@ export class MealsService {
     private mealsRepository: Repository<Meal>,
     private usersService: UsersService,
     private foodsService: FoodsService,
+    @Inject(forwardRef(() => LoggedFoodsService))
+    private loggedFoodsService: LoggedFoodsService,
   ) {}
 
-  private findMealById(id: number) {
-    return this.mealsRepository.findOneBy({ id });
+  private findMealById(id: number, userId: number) {
+    return this.mealsRepository.findOne({
+      where: {
+        id,
+        user: {
+          id: userId,
+        },
+      },
+    });
   }
 
   getMealsByUserId(userId: number) {
@@ -47,29 +58,29 @@ export class MealsService {
   }
 
   async getMealById(userId: number, mealId: number) {
-    const meal = await this.findMealById(mealId);
+    const meal = await this.findMealById(mealId, userId);
 
-    console.log({ meal });
-
-    if (meal?.user.id !== userId) {
-      throw new NotFoundException(`Meal with id ${mealId} not found`);
+    if (!meal) {
+      throw new ConflictException(`Meal with id ${mealId} not found`);
     }
 
     return meal;
   }
 
   async createMeal(userId: number, meal: MealDto) {
-    const user = await this.usersService.getUserById(userId);
+    await this.usersService.getUserById(userId);
 
-    if (!user) {
-      throw new ConflictException(`User with id ${userId} not found`);
-    }
+    for (const loggedFood of meal.logged_foods) {
+      console.log({ loggedFood });
 
-    for (const food of meal.foods) {
-      const foodExists = await this.foodsService.getFoodById(food.id!);
+      const foodExists = await this.foodsService.getFoodById(
+        loggedFood.food.id!,
+      );
 
       if (!foodExists) {
-        throw new ConflictException(`Food with id ${food.id} not found`);
+        throw new ConflictException(
+          `Food with id ${loggedFood.food.id} not found`,
+        );
       }
     }
 
@@ -81,27 +92,26 @@ export class MealsService {
     });
 
     const createdMeal = await this.mealsRepository.save(newMeal);
-
     return createdMeal;
   }
 
   async updateMeal(userId: number, id: number, meal: Partial<MealDto>) {
-    const mealExists = await this.findMealById(id);
+    const mealExists = await this.findMealById(id, userId);
 
     if (!mealExists) {
       throw new ConflictException(`Meal with id ${id} not found`);
     }
 
-    if (mealExists.user.id !== userId) {
-      throw new ConflictException(`Meal with id ${id} not found`);
-    }
-
-    if (meal.foods) {
-      for (const food of meal.foods) {
-        const foodExists = await this.foodsService.getFoodById(food.id!);
+    if (meal.logged_foods) {
+      for (const loggedFood of meal.logged_foods) {
+        const foodExists = await this.foodsService.getFoodById(
+          loggedFood.food.id!,
+        );
 
         if (!foodExists) {
-          throw new ConflictException(`Food with id ${food.id} not found`);
+          throw new ConflictException(
+            `Food with id ${loggedFood.food.id} not found`,
+          );
         }
       }
     }
@@ -114,8 +124,24 @@ export class MealsService {
     return updatedMeal;
   }
 
+  async addLoggedFoodToMeal(
+    userId: number,
+    mealId: number,
+    loggedFood: LoggedFoodDto,
+  ) {
+    return this.loggedFoodsService.addLoggedFoodToMeal(
+      userId,
+      mealId,
+      loggedFood,
+    );
+  }
+
+  async removeLoggedFoodFromMeal(userId: number, mealId: number, id: number) {
+    return this.loggedFoodsService.removeLoggedFoodFromMeal(userId, mealId, id);
+  }
+
   async deleteMeal(userId: number, mealId: number) {
-    const meal = await this.findMealById(mealId);
+    const meal = await this.findMealById(mealId, userId);
 
     if (!meal) {
       throw new ConflictException(`Meal with id ${mealId} not found`);
@@ -128,57 +154,5 @@ export class MealsService {
     await this.mealsRepository.remove(meal);
 
     return true;
-  }
-
-  async addFoodsToMeal(userId: number, mealId: number, foods: FoodDto[]) {
-    const meal = await this.findMealById(mealId);
-
-    if (!meal) {
-      throw new ConflictException(`Meal with id ${mealId} not found`);
-    }
-
-    if (meal.user.id !== userId) {
-      throw new ConflictException(`Meal with id ${mealId} not found`);
-    }
-
-    const foodsToAdd = [];
-
-    for (const food of foods) {
-      const foodExists = await this.foodsService.getFoodById(food.id!);
-      foodsToAdd.push(foodExists);
-    }
-
-    meal.foods = [...meal.foods, ...foodsToAdd];
-
-    const updatedMeal = await this.mealsRepository.save(meal);
-
-    return updatedMeal;
-  }
-
-  async removeFoodsFromMeal(userId: number, mealId: number, foods: FoodDto[]) {
-    const meal = await this.findMealById(mealId);
-
-    if (!meal) {
-      throw new ConflictException(`Meal with id ${mealId} not found`);
-    }
-
-    if (meal.user.id !== userId) {
-      throw new ConflictException(`Meal with id ${mealId} not found`);
-    }
-
-    const foodsToRemove: Food[] = [];
-
-    for (const food of foods) {
-      const foodExists = await this.foodsService.getFoodById(food.id!);
-      foodsToRemove.push(foodExists);
-    }
-
-    meal.foods = meal.foods.filter(
-      (food) => !foodsToRemove.find((f) => f.id === food.id),
-    );
-
-    const updatedMeal = await this.mealsRepository.save(meal);
-
-    return updatedMeal;
   }
 }

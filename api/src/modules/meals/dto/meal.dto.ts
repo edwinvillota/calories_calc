@@ -1,8 +1,14 @@
-import { ArrayNotEmpty, IsArray, IsDate, IsEnum } from 'class-validator';
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsDate,
+  IsEnum,
+  IsNotEmpty,
+  ValidateNested,
+} from 'class-validator';
 import { MealType } from '../entities/meal.entity';
 import { Type } from 'class-transformer';
-
-import { FoodDto } from 'src/modules/foods/dto/food.dto';
+import { LoggedFoodDto } from 'src/modules/logged-foods/dto/logged-food.dto';
 
 export class MealDto {
   @IsDate()
@@ -12,8 +18,10 @@ export class MealDto {
   @IsEnum(MealType)
   meal_type: MealType;
 
+  @IsNotEmpty()
   @IsArray()
   @ArrayNotEmpty()
-  @Type(() => FoodDto)
-  foods: FoodDto[];
+  @ValidateNested({ each: true })
+  @Type(() => LoggedFoodDto)
+  logged_foods!: LoggedFoodDto[];
 }

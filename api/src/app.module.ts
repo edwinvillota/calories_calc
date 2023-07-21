@@ -9,6 +9,8 @@ import { FoodsModule } from './modules/foods/foods.module';
 import { ExerciseActivitiesModule } from './modules/exercise-activities/exercise-activities.module';
 import { MealsModule } from './modules/meals/meals.module';
 
+import { LoggedFoodsModule } from './modules/logged-foods/logged-foods.module';
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 
@@ -30,6 +32,7 @@ require('dotenv').config();
         database: configService.get<string>('postgres.database'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: true,
+        debug: true,
       }),
       inject: [ConfigService],
     }),
@@ -38,6 +41,7 @@ require('dotenv').config();
     FoodsModule,
     ExerciseActivitiesModule,
     MealsModule,
+    LoggedFoodsModule,
   ],
   controllers: [],
   providers: [],

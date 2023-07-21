@@ -13,7 +13,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { MealsService } from './meals.service';
 import { User } from '../auth/decorators/user.decorator';
 import { MealDto } from './dto/meal.dto';
-import { FoodDto } from '../foods/dto/food.dto';
+import { LoggedFoodDto } from '../logged-foods/dto/logged-food.dto';
 
 @Controller('/api/v1/meals')
 @UseGuards(AuthGuard('jwt'))
@@ -44,22 +44,26 @@ export class MealsController {
     return this.mealsService.updateMeal(userId, mealId, meal);
   }
 
-  @Patch(':id/foods/add')
-  addFoodToMeal(
+  @Patch(':id/logged-foods/add')
+  addLoggedFoodToMeal(
     @User('id') userId: number,
     @Param('id') mealId: number,
-    @Body() foods: Pick<MealDto, 'foods'>,
+    @Body() loggedFood: LoggedFoodDto,
   ) {
-    return this.mealsService.addFoodsToMeal(userId, mealId, foods.foods);
+    return this.mealsService.addLoggedFoodToMeal(userId, mealId, loggedFood);
   }
 
-  @Patch(':id/foods/remove')
-  removeFoodFromMeal(
+  @Patch(':id/logged-foods/remove/:loggedFoodId')
+  removeLoggedFoodFromMeal(
     @User('id') userId: number,
     @Param('id') mealId: number,
-    @Body() foods: Pick<MealDto, 'foods'>,
+    @Param('loggedFoodId') loggedFoodId: number,
   ) {
-    return this.mealsService.removeFoodsFromMeal(userId, mealId, foods.foods);
+    return this.mealsService.removeLoggedFoodFromMeal(
+      userId,
+      mealId,
+      loggedFoodId,
+    );
   }
 
   @Delete(':id')

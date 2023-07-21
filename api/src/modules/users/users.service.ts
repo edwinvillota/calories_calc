@@ -22,8 +22,14 @@ export class UsersService {
     return this.usersRepository.findOneBy({ email });
   }
 
-  getUserById(id: number) {
-    return this.usersRepository.findOneBy({ id });
+  async getUserById(id: number) {
+    const user = await this.usersRepository.findOneBy({ id });
+
+    if (!user) {
+      throw new ConflictException(`User with id ${id} not found`);
+    }
+
+    return user;
   }
 
   async createUser(user: UserDto) {
