@@ -11,6 +11,7 @@ import { MealsModule } from './modules/meals/meals.module';
 
 import { LoggedFoodsModule } from './modules/logged-foods/logged-foods.module';
 import { ExercisesModule } from './modules/exercises/exercises.module';
+import { SeedModule } from './modules/seed/seed.module';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -44,6 +45,7 @@ require('dotenv').config();
     MealsModule,
     LoggedFoodsModule,
     ExercisesModule,
+    SeedModule,
   ],
   controllers: [],
   providers: [],
