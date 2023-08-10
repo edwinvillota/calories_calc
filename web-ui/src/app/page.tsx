@@ -1,7 +1,12 @@
 import { Container, Stack, Typography } from "@mui/material";
-import { LoginForm } from "./components";
+import { LoginForm } from "./_components";
+import { UserService } from "./_services";
 
-export default function Home() {
+export default async function Home() {
+  const data = await UserService.me();
+
+  console.log({ data });
+
   return (
     <main>
       <Container maxWidth="lg">
