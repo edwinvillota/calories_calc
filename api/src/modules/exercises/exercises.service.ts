@@ -69,8 +69,6 @@ export class ExercisesService {
       user,
     });
 
-    console.log(newExercise.logged_exercises);
-
     const createdExercise = await this.exercisesRepository.save(newExercise);
     return createdExercise;
   }

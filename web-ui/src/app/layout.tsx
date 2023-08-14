@@ -1,7 +1,7 @@
-import { CssBaseline } from "@mui/material";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import ThemeRegistry from "./_theme/ThemeRegistry";
+import { NextAuthProvider } from "./_services/auth/AuthProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,7 +29,9 @@ export default function RootLayout({
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </head>
       <body className={inter.className}>
-        <ThemeRegistry options={{ key: "mui" }}>{children}</ThemeRegistry>
+        <NextAuthProvider>
+          <ThemeRegistry options={{ key: "mui" }}>{children}</ThemeRegistry>
+        </NextAuthProvider>
       </body>
     </html>
   );

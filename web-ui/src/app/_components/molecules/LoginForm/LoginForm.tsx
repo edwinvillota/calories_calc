@@ -1,14 +1,6 @@
 "use client";
-import {
-  Button,
-  Container,
-  FormControl,
-  FormHelperText,
-  Grid,
-  Input,
-  InputLabel,
-  TextField,
-} from "@mui/material";
+import { Button, Grid, TextField } from "@mui/material";
+import { signOut } from "next-auth/react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 interface LoginFormInputs {
@@ -45,6 +37,18 @@ export const LoginForm = () => {
         <Grid item>
           <Button fullWidth type="submit" variant="contained">
             Login
+          </Button>
+        </Grid>
+        <Grid item>
+          <Button
+            fullWidth
+            type="submit"
+            variant="contained"
+            onClick={() => {
+              signOut();
+            }}
+          >
+            Signout
           </Button>
         </Grid>
       </Grid>

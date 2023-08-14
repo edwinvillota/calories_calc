@@ -49,8 +49,6 @@ export const APIClient = async <Request, Response>({
         ? ((await getSession()) as AuthSession)
         : ((await getServerSession(authOptions)) as AuthSession);
 
-      console.log("APIClient session", session);
-
       const token = session ? session.accessToken : "";
 
       const response = await fetch(
@@ -61,7 +59,6 @@ export const APIClient = async <Request, Response>({
           method,
           headers: new Headers([
             ...Object.entries({
-              ...headers,
               ...(method.toUpperCase() !== APIClientMethods.GET && {
                 "Content-Type": "application/json",
               }),
@@ -69,6 +66,7 @@ export const APIClient = async <Request, Response>({
                 useAuthorization && {
                   Authorization: `Bearer ${token}`,
                 }),
+              ...headers,
             }),
           ]),
           body: JSON.stringify(body),

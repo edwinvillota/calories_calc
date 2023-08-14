@@ -31,6 +31,6 @@ export const getUserByToken = async (token: string) => {
 
     return response;
   } catch (error) {
-    throw error;
+    return error;
   }
 };

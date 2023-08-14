@@ -29,7 +29,7 @@ export const authOptions: AuthOptions = {
 
             if (user) {
               return {
-                ...user,
+                user,
                 accessToken: token,
               } as unknown as User;
             }
@@ -49,6 +49,7 @@ export const authOptions: AuthOptions = {
         return {
           ...token,
           accessToken,
+          user,
         };
       }
 
@@ -56,10 +57,11 @@ export const authOptions: AuthOptions = {
     },
     session: async ({ session, token, user }) => {
       if (token) {
-        const accessToken = (token as JWT).accessToken;
+        const loggedUser = token.user as AuthUser;
+
         return {
           ...session,
-          accessToken,
+          ...loggedUser,
         };
       }
 
